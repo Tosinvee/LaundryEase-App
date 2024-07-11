@@ -9,9 +9,16 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  //console.log(req.headers);
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 app.use("/api/users", userRouter);
 
 app.use("*", (req, res, next) => {
+  console.log(req.headers);
   // const error = new Error(`can't find this ${req.originalUrl} on this server`);
   // error.status = "fail";
   // error.statusCode = 404;

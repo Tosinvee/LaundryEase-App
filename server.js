@@ -13,7 +13,7 @@ mongoose
     console.log("error connecting to database:", error);
   });
 
-port = 4040;
+port = 3000;
 app.listen(port, () => {
   console.log(`server listening on ${port}`);
 });
