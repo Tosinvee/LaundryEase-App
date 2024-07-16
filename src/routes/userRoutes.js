@@ -1,7 +1,13 @@
 ///user routes
 const express = require("express");
 const passport = require("passport");
-const { signup, login, secure } = require("../controller/authController");
+const {
+  signup,
+  login,
+  secure,
+  forgotPassword,
+  verifyEmail,
+} = require("../controller/authController");
 const {
   getAllUsers,
   updateUser,
@@ -28,7 +34,9 @@ router.get(
 );
 
 router.post("/signup", signup);
+router.get("/verifyEmail", verifyEmail);
 router.post("/login", login);
+router.post("/forgotPassword", forgotPassword);
 
 //router.route("/").get(secure, getAllUsers);
 

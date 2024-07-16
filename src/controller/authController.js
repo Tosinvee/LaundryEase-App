@@ -1,7 +1,9 @@
+const { promisify } = require("util");
 const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const { catchAsync } = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const sendVerificationEmail = require("../utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -17,16 +19,39 @@ const signup = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+  //generate email verification token
+  const verificationToken = signToken(newUser._id);
+
+  //send verification email
+  sendVerificationEmail(newUser.email, verificationToken);
   res.status(201).json({
     status: "sucess",
-    token,
-    data: {
-      user: newUser,
-    },
+    message: "user registered. please check your email for verification",
   });
+});
+
+const verifyEmail = catchAsync(async (req, res, next) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return next(new AppError("Token is missing", 400));
+  }
+
+  try {
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return next(new AppError("Invalid token", 400));
+    }
+
+    user.emailVerified = true;
+    await user.save({ validateBeforeSave: false });
+    res.status(200).send(" Email verified sucessfully");
+  } catch (error) {
+    console.log("error verify email", error);
+    return next(new AppError("Error verifying email", 500));
+  }
 });
 
 const login = catchAsync(async (req, res, next) => {
@@ -64,4 +89,20 @@ const secure = catchAsync(async (req, res, next) => {
   next();
 });
 
-module.exports = { signup, login, secure };
+const forgotPassword = catchAsync(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new AppError("Theres no user without this email address", 404));
+  }
+});
+
+const resetPassword = catchAsync(async (req, res, next) => {});
+
+module.exports = {
+  signup,
+  verifyEmail,
+  login,
+  secure,
+  resetPassword,
+  forgotPassword,
+};
