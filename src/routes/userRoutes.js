@@ -7,6 +7,8 @@ const {
   secure,
   forgotPassword,
   verifyEmail,
+  verifyOtp,
+  resetPassword,
 } = require("../controller/authController");
 const {
   getAllUsers,
@@ -37,6 +39,8 @@ router.post("/signup", signup);
 router.get("/verifyEmail", verifyEmail);
 router.post("/login", login);
 router.post("/forgotPassword", forgotPassword);
+router.post("/verifyOtp", verifyOtp);
+router.post("/resetPassword", resetPassword);
 
 //router.route("/").get(secure, getAllUsers);
 

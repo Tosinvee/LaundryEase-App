@@ -33,4 +33,21 @@ const sendVerificationEmail = (email, token) => {
   });
 };
 
-module.exports = sendVerificationEmail;
+const sendResetOtp = (email, otp) => {
+  const mailOptions = {
+    from: "your-email@gmail.com",
+    to: email,
+    subject: "Password Reset OTP",
+    html: `<p>Your OTP for password reset is: <strong>${otp}</strong> and will expiry in 10mins</p>`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Password reset OTP email sent: " + info.response);
+    }
+  });
+};
+
+module.exports = { sendVerificationEmail, sendResetOtp };
