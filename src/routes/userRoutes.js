@@ -18,8 +18,10 @@ const {
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.send("hello tosin");
+  res.send("hello laundryease");
 });
+
+router.get("/allUsers", getAllUsers);
 
 router.get(
   "/auth/google",
