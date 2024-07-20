@@ -6,6 +6,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const passport = require("passport");
 const session = require("express-session");
+const mongoose = require("mongoose");
+const MongoStore = require("connect-mongo");
 const AppError = require("./src/utils/appError");
 const globalError = require("./src/controller/errorController");
 const userRouter = require("./src/routes/userRoutes");
@@ -51,6 +53,9 @@ app.use(
     resave: false, // Do not save session if unmodified
     saveUninitialized: false, // Do not create session until something stored
     cookie: { secure: false }, // Set to true if using HTTPS
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+    }),
   })
 );
 app.use(passport.initialize());
