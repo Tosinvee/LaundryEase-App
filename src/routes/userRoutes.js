@@ -18,7 +18,7 @@ const {
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.send('<a href="/api/user/auth/goggle">Authenticate with Google</a>');
+  res.send('<a href="/api/users/auth/goggle">Authenticate with Google</a>');
 });
 
 router.get("/allUsers", getAllUsers);
