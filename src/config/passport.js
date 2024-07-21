@@ -10,8 +10,9 @@ module.exports = (passport) => {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_CALLBACK_URL,
+        passReqToCallback: true,
       },
-      async function (accessToken, refreshToken, profile, done) {
+      async function (req, accessToken, refreshToken, profile, done) {
         try {
           const email =
             profile.emails && profile.emails.length > 0
@@ -35,6 +36,9 @@ module.exports = (passport) => {
             user.photo = profile.photos[0].value;
             await user.save();
           }
+
+          // You can now access req and potentially store profile info in the session
+          req.session.userProfile = profile;
 
           done(null, user);
         } catch (error) {
