@@ -86,4 +86,45 @@ exports.deleteUser = (req, res) => {
   });
 };
 
-module.exports = { getAllUsers, updateMe, deleteMe };
+// Get Profile Info
+const getProfile = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+
+// Update Profile Info
+const updateProfile = catchAsync(async (req, res, next) => {
+  const { photo, userName, mobileNumber, location } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    { photo, userName, mobileNumber, location },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updatedUser) {
+    return next(new AppError("User not found", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
+});
+
+module.exports = { getAllUsers, updateMe, deleteMe, updateProfile, getProfile };

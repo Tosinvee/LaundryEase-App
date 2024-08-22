@@ -55,6 +55,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    location: {
+      type: String,
+      default: null,
+    },
+    username: {
+      type: String,
+      unique: true,
+      default: null,
+    },
+    mobileNumber: {
+      type: String,
+      default: null,
+      validate: {
+        validator: function (value) {
+          return !value || validator.isMobilePhone(value);
+        },
+        message: "Please provide a valid mobile number",
+      },
+    },
+
     displayName: {
       type: String,
       default: null,

@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = (email, token) => {
   const host = "localhost"; // Replace with your production domain in production
   const port = 5050; // Replace with your development port number
-  const verificationUrl = `https://laundryease.onrender.com/api/users/verifyEmail?token=${token}`;
+  const verificationUrl = `http://localhost:5050/api/users/verifyEmail?token=${token}`;
 
   const mailOptions = {
     from: "your-email@gmail.com",
