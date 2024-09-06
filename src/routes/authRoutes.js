@@ -38,21 +38,10 @@ router.get(
 );
 
 router.post("/signup", signup);
-/**
- * @swagger
- * /users:
- *   get:
- *     summary: Retrieve a list of users
- *     responses:
- *       200:
- *         description: A list of users.
- */
 router.get("/verifyEmail", verifyEmail);
 router.post("/login", login);
 router.post("/forgotPassword", forgotPassword);
 router.post("/verifyOtp", verifyOtp);
-router.post("/resetPassword", resetPassword);
-
-//router.route("/").get(secure, getAllUsers);
+router.post("/resetPassword", secure, resetPassword);
 
 module.exports = router;

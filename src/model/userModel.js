@@ -66,6 +66,7 @@ const userSchema = new mongoose.Schema(
     },
     mobileNumber: {
       type: String,
+      trim: true,
       default: null,
       validate: {
         validator: function (value) {
@@ -73,6 +74,10 @@ const userSchema = new mongoose.Schema(
         },
         message: "Please provide a valid mobile number",
       },
+    },
+    profilePic: {
+      type: String,
+      default: null,
     },
 
     displayName: {
@@ -108,19 +113,19 @@ userSchema.methods.correctPassword = async function (
 };
 
 //password reset token
-userSchema.methods.createPasswordResetToken = async function () {
-  const resetToken = crypto.randomBytes(32).toString("hex");
+userSchema.methods.createPasswordResetOtp = async function () {
+  const resetOtp = Math.floor(1000 + Math.random() * 9000).toString();
 
-  this.passwordResetToken = crypto
+  this.passwordResetOtp = crypto
     .createHash("sha256")
-    .update(resetToken)
+    .update(resetOtp)
     .digest("hex");
 
-  console.log({ resetToken }, this.passwordResetToken);
+  console.log({ resetOtp }, this.passwordResetOtp);
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
-  return resetToken;
+  return resetOtp;
 };
 
 const User = mongoose.model("User", userSchema);

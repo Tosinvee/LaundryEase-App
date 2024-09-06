@@ -1,6 +1,7 @@
 ///user controller
 const User = require("../model/userModel");
 const { catchAsync } = require("../utils/catchAsync");
+const { createSendToken } = require("./authController");
 const AppError = require("../utils/appError");
 
 const filterObj = (obj, ...allowedFields) => {
@@ -103,28 +104,29 @@ const getProfile = catchAsync(async (req, res, next) => {
 });
 
 // Update Profile Info
-const updateProfile = catchAsync(async (req, res, next) => {
-  const { photo, userName, mobileNumber, location } = req.body;
+const updateUserProfile = catchAsync(async (req, res, next) => {
+  const { username, location, mobileNumber } = req.body;
+  const imageUrl = req.file ? req.file.path : null;
 
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user.id,
-    { photo, userName, mobileNumber, location },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  if (!updatedUser) {
-    return next(new AppError("User not found", 404));
-  }
-
+  const updatedData = {
+    ...(username && { username }),
+    ...(location && { location }),
+    ...(mobileNumber && { mobileNumber }),
+    ...(imageUrl && { profilePic: imageUrl }),
+  };
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, updatedData, {
+    new: true,
+  });
   res.status(200).json({
-    status: "success",
-    data: {
-      user: updatedUser,
-    },
+    message: "Profile updated successfully",
+    updatedUser,
   });
 });
 
-module.exports = { getAllUsers, updateMe, deleteMe, updateProfile, getProfile };
+module.exports = {
+  getAllUsers,
+  updateMe,
+  deleteMe,
+  updateUserProfile,
+  getProfile,
+};
